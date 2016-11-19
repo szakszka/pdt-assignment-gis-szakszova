@@ -13,8 +13,6 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 **My project**
 
-Fork this repository and fill in (either in English, or in Slovak):
-
 Application description: 
 
 Data source: OpenStreetMap, OpenCellId
