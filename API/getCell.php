@@ -3,25 +3,9 @@
 
 	require "db.php"; 
 	
-	$netList = '';
-	
-	if(!empty($nets)) {
-		foreach($nets as $check) {
-				$netList = $netList .',' .$check;
-		}
-	}
-	
-	$netList = substr($netList, 1);
-
 	$query = pg_query($db_towers,"SELECT ST_AsGeoJSON(the_geom) AS geojson, towers.cell, towers.radio, towers.net, towers.samples, 
-		towers.range, towers.averagesignal, ST_Distance(
-				ST_Transform(the_geom,26986),
-				ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986)
-			) FROM towers 
-		WHERE ST_Distance(	
-				ST_Transform(the_geom,26986),
-				ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986)
-			) < $radius  AND range > 0 AND net IN ($netList);"); 
+	towers.range, towers.averagesignal FROM towers 
+	WHERE cell=$cellId AND range > 0;"); 
 
 	$num_rows = pg_num_rows($query);
 

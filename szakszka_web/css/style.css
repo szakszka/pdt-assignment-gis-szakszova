@@ -12,28 +12,11 @@
 	padding-top: 30px; /* Place content 60px from the top */
 }
 
-/* The side navigation menu */
-.sidestats {
-    height: 100%; /* 100% Full-height */
-    width: 0px; /* 0 width - change this with JavaScript */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Stay on top */
-	top:0;
-	right:0;
-    background-color: #111; /* Black*/
-    overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 20px; /* Place content 60px from the top */
-    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+hr{
+	border-top: 1px solid #8c8b8b;
+	width: 250px;
 }
 
-/* Position and style the close button (top right corner) */
-.sidestats .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}
 
 /* The side navigation menu */
 .sidenav {
@@ -49,8 +32,9 @@
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
 }
 
+
 /* The navigation menu links */
-.sidenav a, .sidestats a {
+.sidenav a {
     padding: 8px 8px 8px 32px;
     text-decoration: none;
     font-size: 25px;
@@ -60,29 +44,39 @@
 }
 
 /* The navigation menu text */
-.sidenav p, .sidenav ol {
+.sidenav p, .sidenav ol, ol.sub-menu a{
     font-size: 18px;
     color: LightCyan;
     display: block;
 }
 
-.sidenav h1, .sidestats h1 {
+.sidenav .sub-menu p {
+	font-size: 18px;
+	margin-top: 0;
+	margin-bottom: 2px;
+}
+
+.sidenav h1 {
 	padding: 8px;
     color: LightCyan;
     display: block;	
 }
 
-.sidenav li {
+.sidenav li, ol.sub-menu a, ol.sub-menu ol {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
+}
+
+ol.sub-menu p {
+	font-size: 14px;
 }
 
 .sidenav button {
     background-color: #b3b3cc
 }
 
-.sidenav .radius {
+.radius, .cell{
 	width: 150px;
     background-color: #b3b3cc
 }

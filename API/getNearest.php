@@ -13,15 +13,13 @@
 	
 	$netList = substr($netList, 1);
 
-	$query = pg_query($db_towers,"SELECT ST_AsGeoJSON(the_geom) AS geojson, towers.cell, towers.radio, towers.net, towers.samples, 
-		towers.range, towers.averagesignal, ST_Distance(
-				ST_Transform(the_geom,26986),
-				ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986)
-			) FROM towers 
-		WHERE ST_Distance(	
-				ST_Transform(the_geom,26986),
-				ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986)
-			) < $radius  AND range > 0 AND net IN ($netList);"); 
+	$query = pg_query($db_towers,"SELECT ST_AsGeoJSON(the_geom) AS geojson, towers.cell, towers.radio, towers.net, towers.samples, towers.range, towers.averagesignal, ST_Distance(
+			ST_Transform(the_geom,26986),
+			ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986)
+		) as distance 
+		FROM towers 
+		WHERE range > 0 AND net IN ($netList)
+		ORDER BY distance LIMIT $nearest;"); 
 
 	$num_rows = pg_num_rows($query);
 
