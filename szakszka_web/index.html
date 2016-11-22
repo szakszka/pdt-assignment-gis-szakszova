@@ -13,8 +13,8 @@
         <link rel="stylesheet" href="css/main.css">
 		<link rel="stylesheet" href="css/style.css">
 		<link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
-		<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
-		<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' />
+		<!-- <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' /> -->
+		<!-- <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' /> -->
 		<script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
     </head>
 	
@@ -36,13 +36,11 @@
 						<p>Lng: <input type="number" class="radius" readonly="readonly" id=lon></p>
 						<hr>
 						<p>Radius: <input type="number" id="radius" class="radius" value="1000"> m</p> 
-						<!-- button show towers-->
 						<div>
 							<button id="show" type="button" onclick="showStations()">Show</button>
 						</div>								
 						<hr>
 						<p>Nearest: <input type="number" id="nearest" class="radius" value=""></p> 
-						<!-- button show towers-->
 						<div>
 							<button id="show" type="button" onclick="showNearest()">Show</button>
 						</div>		
@@ -109,7 +107,7 @@
 				
 				var info = L.control();
 				info.onAdd = function (map) {
-					this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+					this._div = L.DomUtil.create('div', 'info');
 					return this._div;
 				};
 				info.addTo(map);	
@@ -241,11 +239,11 @@
 							map.addLayer(basicLayer);
 						}					
 					});				
-				};
+				};				
 			</script>
 		</div>
 		
-		<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+		<!-- <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script> -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
@@ -260,9 +258,6 @@
 			var actPos_lon;
 				
 			$.geolocation.getCurrentPosition(function(position){
-				<!-- console.log(position); -->
-				<!-- console.log(position.coords.longitude); -->
-				<!-- console.log(position.coords.latitude); -->
 				$('#lat').val(position.coords.latitude);
 				$('#lon').val(position.coords.longitude);
 				
@@ -273,15 +268,15 @@
 				 {
 					"type": "Feature",
 					"geometry": {
-					  "type": "Point",
-					  "coordinates": [position.coords.longitude,position.coords.latitude]
+						"type": "Point",
+						"coordinates": [position.coords.longitude,position.coords.latitude]
 					},
 					"properties": {
-					  "title": "Actual Position",
-					  "description":"Lan:" + position.coords.latitude + "<br/>Lng:" + position.coords.longitude,
-					  "marker-color": "#fc4353",
-					  "marker-size": "small",
-					  "marker-symbol": "marker-stroked"
+						"title": "Actual Position",
+						"description":"Lan:" + position.coords.latitude + "<br/>Lng:" + position.coords.longitude,
+						"marker-color": "#fc4353",
+						"marker-size": "small",
+						"marker-symbol": "marker-stroked"
 					}
 				 }];
 					
