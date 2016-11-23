@@ -16,6 +16,8 @@
 		<!-- <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' /> -->
 		<!-- <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' /> -->
 		<script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
+		<link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.css' type='text/css' />
+		<script src='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.js'></script>
     </head>
 	
     <body>
@@ -70,6 +72,13 @@
 							</form>
 						</ol>
 					</li>
+					<li><a href="#">Route</a>
+						<ol class="subsub-menu">
+							<input type="checkbox" name="routeCheckbox" class="routeCheckbox" value="0" onclick="routeCheck()"> Route
+							<div id='inputs'></div>
+							<div id='errors'></div>							
+						</ol>
+					</li>					
 				</ol>				
 			</li>
 			<li><a href="#">Statistics</a>
@@ -94,10 +103,21 @@
 			</h1>
 			
 			<div id='map'></div>
+			<!-- <div id='directions'> -->
+				<!-- <div id='routes'></div> -->
+				<!-- <div id='instructions'></div> -->
+			<!-- </div>			 -->
 					
 			<script>
 				L.mapbox.accessToken = 'pk.eyJ1Ijoic3pha3N6a2EiLCJhIjoiY2l1OGlwdzdpMDAxODJ5cGp2OHRtZW5rYSJ9.-Ve3EddQ-PQ3hsbiRwyAkQ';
 				var map = L.mapbox.map('map', 'szakszka.1ljgmpd6');
+				
+				// create the initial directions object, from which the layer and inputs will pull data.
+				var directions = L.mapbox.directions();			
+				var directionsLayer = L.mapbox.directions.layer(directions);				
+				var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(map);			
+				var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);														
+							
 				var clickedPos;
 				var coord;
 				var lat;
@@ -239,6 +259,14 @@
 							map.addLayer(basicLayer);
 						}					
 					});				
+				};		
+
+				function routeCheck(){
+					if ($('input[name="routeCheckbox"]').is(':checked')) {			
+						map.addLayer(directionsLayer);
+					} else {
+						map.removeLayer(directionsLayer);
+					}
 				};				
 			</script>
 		</div>
