@@ -125,8 +125,43 @@
 							</td> 
 						  </tr>						  
 					</table>
+					
+					<table>
+						  <tr>
+							<th>Orange</th>
+							<td>
+								<div style="display: inline" class="orange"></div>
+							</td> 
+						  </tr>
+						  <tr>
+							<th>Telekom</th>
+							<td>
+								<div style="display: inline" class="telecom"></div>
+							</td> 
+						  </tr>	
+						  <tr>
+							<th>Swan (4ka)</th>
+							<td>
+								<div style="display: inline" class="swan"></div>
+							</td> 
+						  </tr>							  
+						  <tr>
+							<th>O2</th>
+							<td>
+								<div style="display: inline" class="o2"></div>
+							</td> 
+						  </tr>							  
+					</table>					
 				</ol>				
-			</li>		
+			</li>	
+			<li><a href="#">Settings</a>
+				<ol class="sub-menu">
+					<form action="">
+						<p>Min. range: <input type="number" class="radius" id=minrange value="1"> m</p>
+						<p>Min. samples: <input type="number" class="radius" id=minsamples value="0"></p>
+					</form>
+				</ol>				
+			</li>			
 		</div>	
 			
 		<div id="main">	
@@ -205,7 +240,7 @@
 
 					$.ajax({
 						url:"http://localhost/PDT/API/getStations.php",
-						data:{lat:$('#lat').val(), lon:$('#lon').val(),radius:$('#radius').val(), nets: nets}
+						data:{lat: $('#lat').val(), lon: $('#lon').val(),radius: $('#radius').val(), nets: nets, minrange: $('#minrange').val(), minsamples: $('#minsamples').val()}
 					}).done(function(data){		
 						if (data != 0) {
 							if (basicLayer) map.removeLayer(basicLayer);
@@ -304,24 +339,6 @@
 					map.setView([$('#latS').val(), $('#lonS').val()], 12);
 				};
 				
-				function actPoscheck(){
-					if ($('input[name="actPosCheckbox"]').is(':checked')) {
-						if (marker != null){
-							map.removeLayer(marker);
-						}
-						$('#lat').val(actPos_lan);
-						$('#lon').val(actPos_lon);
-					}
-				};
-				
-				function rangeCheck(){
-					if ($('input[name="rangeCheckbox"]').is(':checked')) {
-						if (rangeLayer != null) map.addLayer(rangeLayer);
-					} else {
-						if (rangeLayer) map.removeLayer(rangeLayer);
-					}					
-				};				
-				
 				function showCover() {
 					var nets = new Array();
 					$('input[name="operator"]:checked').each(function() {
@@ -329,7 +346,7 @@
 					});				
 					$.ajax({
 						url:"http://localhost/PDT/API/getCover.php",
-						data:{lat:$('#lat').val(), lon:$('#lon').val(), nets: nets}
+						data:{lat: $('#lat').val(), lon: $('#lon').val(), nets: nets, minrange: $('#minrange').val(), minsamples: $('#minsamples').val()}
 					}).done(function(data){		
 						if (data != 0) {
 							if (basicLayer) map.removeLayer(basicLayer);
@@ -367,7 +384,7 @@
 					});				
 					$.ajax({
 						url:"http://localhost/PDT/API/getNearest.php",
-						data:{lat:$('#lat').val(), lon:$('#lon').val(),nearest:$('#nearest').val(), nets: nets}
+						data:{lat: $('#lat').val(), lon: $('#lon').val(), nearest: $('#nearest').val(), nets: nets, minrange: $('#minrange').val(), minsamples: $('#minsamples').val()}
 					}).done(function(data){		
 						if (data != 0) {
 							if (basicLayer) map.removeLayer(basicLayer);
@@ -398,15 +415,6 @@
 					});				
 				};		
 
-				function routeCheck(){
-					if ($('input[name="routeCheckbox"]').is(':checked')) {			
-						map.addLayer(directionsLayer);
-					} else {
-						map.removeLayer(directionsLayer);
-						if (basicLayer) map.removeLayer(basicLayer);
-					}
-				};	
-
 				function showCellsOnRoute() {
 					document.getElementById("loader").style.visibility = "visible";
 					if ($('input[name="routeCheckbox"]').is(':checked')) {	
@@ -421,7 +429,7 @@
 						$.ajax({
 							type: "POST",
 							url:"http://localhost/PDT/API/getCellsOnRoute.php",
-							data:{lineString: waypoints, nets: nets}
+							data:{lineString: waypoints, nets: nets, minrange: $('#minrange').val(), minsamples: $('#minsamples').val()}
 						}).done(function(data){	
 							if (data != 0) {
 								if (basicLayer) map.removeLayer(basicLayer);
@@ -452,10 +460,37 @@
 							document.getElementById("loader").style.visibility = "hidden";							
 						}).fail(function () {
 								document.getElementById("loader").style.visibility = "hidden";
-								alert("LONG TIME > 30s");
+								alert("Something went wrong :(");
 							})
 					};
 				};
+				
+				function actPoscheck(){
+					if ($('input[name="actPosCheckbox"]').is(':checked')) {
+						if (marker != null){
+							map.removeLayer(marker);
+						}
+						$('#lat').val(actPos_lan);
+						$('#lon').val(actPos_lon);
+					}
+				};
+				
+				function rangeCheck(){
+					if ($('input[name="rangeCheckbox"]').is(':checked')) {
+						if (rangeLayer != null) map.addLayer(rangeLayer);
+					} else {
+						if (rangeLayer) map.removeLayer(rangeLayer);
+					}					
+				};				
+								
+				function routeCheck(){
+					if ($('input[name="routeCheckbox"]').is(':checked')) {			
+						map.addLayer(directionsLayer);
+					} else {
+						map.removeLayer(directionsLayer);
+						if (basicLayer) map.removeLayer(basicLayer);
+					}
+				};	
 				
 				function clearMap() {
 					if (marker) map.removeLayer(marker);

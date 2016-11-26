@@ -5,6 +5,11 @@ function getStats() {
 		 response = JSON.parse(data);
 		 $('.towersCount').html(response.count);
 		 $('.maxRange').html(response.max + " m");
+		 
+		 $('.orange').html(response.orange);
+		 $('.telecom').html(response.telecom);
+		 $('.swan').html(response.swan);
+		 $('.o2').html(response.o2);
 
 	  }
   });

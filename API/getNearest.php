@@ -18,7 +18,7 @@
 							SELECT ST_AsGeoJSON(the_geom) AS geojson, towers.cell, towers.radio, towers.net, towers.samples, towers.range, towers.averagesignal,
 							RANK() OVER (PARTITION BY net ORDER BY ST_Transform(the_geom,26986) <-> ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986)) AS top
 							FROM towers 
-							WHERE range > 0 AND net IN ($netList)	
+							WHERE range > $minrange AND samples > $minsamples AND net IN ($netList)	
 						)
 						SELECT * FROM operatorNearest WHERE top <= $nearest;"); 
 

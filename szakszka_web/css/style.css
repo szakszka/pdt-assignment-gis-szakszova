@@ -89,6 +89,7 @@ ol.sub-menu p {
 .sidenav table {
     font-family: arial, sans-serif;
 	border-collapse: collapse;
+	margin-bottom: 30px
 }
 
 .sidenav td, .sidenav th {

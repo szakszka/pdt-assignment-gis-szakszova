@@ -20,7 +20,7 @@
 									ST_Transform(the_geom, 26986),
 									ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986))) AS top
 							FROM towers 
-							WHERE range > 0 AND net IN (1,2,3,6) AND ST_Distance(
+							WHERE range > $minrange AND samples > $minsamples AND net IN (1,2,3,6) AND ST_Distance(
 									ST_Transform(the_geom, 26986),
 									ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986)) < range
 						)

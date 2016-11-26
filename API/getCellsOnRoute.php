@@ -7,6 +7,8 @@
 	require "db.php";
 
 	$nets = $_POST["nets"];
+	$minrange = $_POST["minrange"];
+	$minsamples = $_POST["minsamples"];
 		
 	$netList = '';
 	
@@ -26,7 +28,7 @@
 					RANK() OVER (PARTITION BY net ORDER BY ST_Transform(ST_GeomFromText(ST_AsText(ST_GeomFromGeoJSON('$encoded_string')), 4326),26986)
 				 <-> ST_Transform(towers.the_geom,26986)) AS top
 					FROM towers 
-					WHERE range > 0 AND net IN ($netList) AND ST_DWithin(ST_Transform(towers.the_geom,26986),
+					WHERE range > $minrange AND samples > $minsamples AND net IN ($netList) AND ST_DWithin(ST_Transform(towers.the_geom,26986),
 						ST_Transform((SELECT ST_MakeLine(ST_GeomFromText(ST_AsText(ST_GeomFromGeoJSON('$encoded_string')), 4326))), 26986),
 						towers.range)
 				), NearestOperatorCoveronRoute AS (

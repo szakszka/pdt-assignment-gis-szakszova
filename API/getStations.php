@@ -21,7 +21,7 @@
 		WHERE ST_Distance(	
 				ST_Transform(the_geom,26986),
 				ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986)
-			) < $radius  AND range > 0 AND net IN ($netList);"); 
+			) < $radius  AND range > $minrange AND samples > $minsamples AND net IN ($netList);"); 
 
 	$num_rows = pg_num_rows($query);
 
