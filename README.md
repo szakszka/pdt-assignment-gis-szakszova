@@ -18,6 +18,7 @@ Application description: GPS positions of cell towers in Slovakia
 Data source: OpenStreetMap, **OpenCellId**
 
 Technologies used: 
+
 * frontend: HTML (template Boilerplate), Mapbox API, Javascript, jQuery
 
 * backend: PHP
