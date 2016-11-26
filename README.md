@@ -15,6 +15,9 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 Application description: 
 
-Data source: OpenStreetMap, OpenCellId
+Data source: OpenStreetMap, **OpenCellId**
 
-Technologies used:
+Technologies used: 
+* frontend: HTML (template Boilerplate), Mapbox API, Javascript, jQuery
+* backend: PHP
+* F <-> B: ajax
