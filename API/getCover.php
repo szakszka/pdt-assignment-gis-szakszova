@@ -12,15 +12,19 @@
 	}
 	
 	$netList = substr($netList, 1);
-
-	$query = pg_query($db_towers,"WITH operatorNearest AS
+	
+	$query = pg_query($db_towers,"WITH operatorCover AS
 						(
-							SELECT ST_AsGeoJSON(the_geom) AS geojson, towers.cell, towers.radio, towers.net, towers.samples, towers.range, towers.averagesignal,
-							RANK() OVER (PARTITION BY net ORDER BY ST_Transform(the_geom,26986) <-> ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986)) AS top
+							SELECT ST_AsGeoJSON(the_geom) AS geojson, the_geom, towers.cell, towers.radio, towers.net, towers.samples, towers.range, towers.averagesignal,
+							RANK() OVER (PARTITION BY net ORDER BY ST_Distance(
+									ST_Transform(the_geom, 26986),
+									ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986))) AS top
 							FROM towers 
-							WHERE range > 0 AND net IN ($netList)	
+							WHERE range > 0 AND net IN (1,2,3,6) AND ST_Distance(
+									ST_Transform(the_geom, 26986),
+									ST_Transform(ST_GeomFromText('POINT($lon $lat)', 4326),26986)) < range
 						)
-						SELECT * FROM operatorNearest WHERE top <= $nearest;"); 
+						SELECT * FROM operatorCover WHERE top = 1;"); 
 
 	$num_rows = pg_num_rows($query);
 

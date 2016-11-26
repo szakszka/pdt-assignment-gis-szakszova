@@ -2,7 +2,10 @@ function getStats() {
   return $.ajax({
       url:"http://localhost/PDT/API/api.php",
 	  success:function(data){
-		 $('.the-return').html(data);
+		 response = JSON.parse(data);
+		 $('.towersCount').html(response.count);
+		 $('.maxRange').html(response.max + " m");
+
 	  }
   });
 }

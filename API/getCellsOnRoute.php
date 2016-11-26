@@ -1,15 +1,41 @@
 <?php
+	ini_set('max_execution_time', 300);
+	
 	$lineString = $_POST["lineString"];
 	$encoded_string = json_encode ($lineString);
 
-	require "db.php"; 	
+	require "db.php";
 
-	$query = pg_query($db_towers,"SELECT ST_AsGeoJSON(the_geom) AS geojson, towers.cell, towers.radio, towers.net, towers.samples, towers.range, towers.averagesignal
-		FROM towers WHERE ST_DWithin(
-				ST_Transform(towers.the_geom,26986),
-				ST_Transform((SELECT ST_MakePolygon(ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line))) FROM 
-				(SELECT ST_GeomFromText(ST_AsText(ST_GeomFromGeoJSON('$encoded_string')), 4326) As open_line) As foo),26986),	
-			towers.range)=true;"); 
+	$nets = $_POST["nets"];
+		
+	$netList = '';
+	
+	if(!empty($nets)) {
+		foreach($nets as $check) {
+				$netList = $netList .',' .$check;
+		}
+	} 
+	$netList= substr($netList, 1);	
+	
+	$query = pg_query($db_towers,"WITH operatorCoverOnRoute AS
+				(
+					SELECT ST_AsGeoJSON(the_geom) AS geojson, the_geom, towers.cell, towers.radio, towers.net, towers.samples, towers.range, towers.averagesignal,
+					ST_Distance(ST_Transform(towers.the_geom,26986),
+						ST_Transform((SELECT ST_MakeLine(ST_GeomFromText(ST_AsText(ST_GeomFromGeoJSON('$encoded_string')), 4326))), 26986)) as distance,
+					ST_LineLocatePoint(ST_Transform(ST_GeomFromText(ST_AsText(ST_GeomFromGeoJSON('$encoded_string')), 4326),26986), ST_Transform(towers.the_geom,26986)) as llp,
+					RANK() OVER (PARTITION BY net ORDER BY ST_Transform(ST_GeomFromText(ST_AsText(ST_GeomFromGeoJSON('$encoded_string')), 4326),26986)
+				 <-> ST_Transform(towers.the_geom,26986)) AS top
+					FROM towers 
+					WHERE range > 0 AND net IN ($netList) AND ST_DWithin(ST_Transform(towers.the_geom,26986),
+						ST_Transform((SELECT ST_MakeLine(ST_GeomFromText(ST_AsText(ST_GeomFromGeoJSON('$encoded_string')), 4326))), 26986),
+						towers.range)
+				), NearestOperatorCoveronRoute AS (
+					SELECT *, RANK() OVER (PARTITION BY llp ORDER BY distance) as toptop
+					FROM operatorCoverOnRoute
+				)
+				SELECT * 
+				FROM NearestOperatorCoveronRoute
+				where toptop=1;"); 								
 
 	$num_rows = pg_num_rows($query);
 
@@ -17,8 +43,6 @@
 		echo $num_rows;
 	   exit(0);
 	};
-
-	//echo json_encode ($lineString);
 
 	$rows = pg_fetch_all($query);
 	$towers = []; 

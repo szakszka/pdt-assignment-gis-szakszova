@@ -36,21 +36,43 @@
 						<hr>
 						<p>Lat: <input type="number" class="radius" readonly="readonly" id=lat></p>
 						<p>Lng: <input type="number" class="radius" readonly="readonly" id=lon></p>
+						<hr>	
+						<input type="checkbox" name="rangeCheckbox" class="rangeCheckbox" value="0" onclick="rangeCheck()"> Range
 						<hr>
-						<p>Radius: <input type="number" id="radius" class="radius" value="1000"> m</p> 
 						<div>
-							<button id="show" type="button" onclick="showStations()">Show</button>
-						</div>								
-						<hr>
-						<p>Nearest: <input type="number" id="nearest" class="radius" value=""></p> 
-						<div>
-							<button id="show" type="button" onclick="showNearest()">Show</button>
-						</div>		
+							<button id="show" type="button" onclick="clearMap()">Clear map</button>
+						</div>
 					</form>
 				</ol>	
 			</li>				
 			<li><a href="#">Search</a>
 				<ol class="sub-menu">
+					<li><a href="#">Towers in radius</a>
+						<ol class="subsub-menu">
+							<p>Radius: <input type="number" id="radius" class="radius" value="1000"> m</p> 
+							<div>
+								<button id="show" type="button" onclick="showStations()">Show</button>
+							</div>	
+							<hr>
+						</ol>
+					</li>			
+					<li><a href="#">Nearest towers</a>
+						<ol class="subsub-menu">				
+							<p>Nearest: <input type="number" id="nearest" class="radius" value=""></p> 
+							<div>
+								<button id="show" type="button" onclick="showNearest()">Show</button>
+							</div>	
+							<hr>								
+						</ol>
+					</li>	
+					<li><a href="#">Cover</a>
+						<ol class="subsub-menu">
+							<div>
+								<button id="show" type="button" onclick="showCover()">Show</button>
+							</div>
+							<hr>							
+						</ol>
+					</li>
 					<li><a href="#">GPS location</a>
 						<ol class="subsub-menu">
 							<form action="">
@@ -60,9 +82,10 @@
 									<button id="show" type="button" onclick="showLocation()">Show</button>
 								</div>	
 							</form>
+							<hr>
 						</ol>
 					</li>
-					<li><a href="#">Cell location</a>
+					<li><a href="#">Tower location</a>
 						<ol class="subsub-menu">
 							<form action="">
 								<p>Cell ID: <input type="number" class="cell" id=cellId></p>
@@ -70,16 +93,18 @@
 									<button id="show" type="button" onclick="showCell()">Show</button>
 								</div>	
 							</form>
+							<hr>
 						</ol>
 					</li>
 					<li><a href="#">Route</a>
 						<ol class="subsub-menu">
-							<input type="checkbox" name="routeCheckbox" class="routeCheckbox" value="0" onclick="routeCheck()"> Route
+							<input type="checkbox" name="routeCheckbox" class="routeCheckbox" value="0" onclick="routeCheck()"> Pick Route
 							<div id='inputs'></div>
 							<div id='errors'></div>	
 							<div>
 								<button id="show" type="button" onclick="showCellsOnRoute()">Show</button>
-							</div>								
+							</div>
+							<hr>							
 						</ol>
 					</li>					
 				</ol>				
@@ -90,9 +115,15 @@
 						  <tr>
 							<th>Number of cells</th>
 							<td>
-								<div style="display: inline" class="the-return"></div>
+								<div style="display: inline" class="towersCount"></div>
 							</td> 
 						  </tr>
+						  <tr>
+							<th>Max range</th>
+							<td>
+								<div style="display: inline" class="maxRange"></div>
+							</td> 
+						  </tr>						  
 					</table>
 				</ol>				
 			</li>		
@@ -110,6 +141,7 @@
 				<!-- <div id='routes'></div> -->
 				<!-- <div id='instructions'></div> -->
 			<!-- </div>			 -->
+			<div id="loader"></div>
 					
 			<script>
 				L.mapbox.accessToken = 'pk.eyJ1Ijoic3pha3N6a2EiLCJhIjoiY2l1OGlwdzdpMDAxODJ5cGp2OHRtZW5rYSJ9.-Ve3EddQ-PQ3hsbiRwyAkQ';
@@ -125,6 +157,10 @@
 				var coord;
 				var lat;
 				var lon;
+				var marker;				
+				var basicLayer = new L.TileLayer;
+				var rangeLayer;
+				var color;
 				
 				map.scrollWheelZoom.enable();
 				
@@ -140,7 +176,7 @@
 					info._div.innerHTML = '<b>Position:</b>' +  e.latlng.toString();
 				});		
 
-				var marker;
+
 				map.on('click', function (e) {
 					if (marker != null){
 						map.removeLayer(marker);
@@ -159,8 +195,6 @@
 					$('#lon').val(lon);
 					marker.bindPopup("<b>Clicked position!</b><br />" + clickedPos);
 				});
-				
-				var basicLayer = new L.TileLayer;
 				
 				function showStations(){	
 					var nets = new Array();
@@ -186,9 +220,22 @@
 								return marker;
 							  }
 							});
-							L.circle([$('#lat').val(),$('#lon').val()], $('#radius').val()).addTo(basicLayer);
+							L.circle([$('#lat').val(),$('#lon').val()], $('#radius').val(), {color: '#33cc33'}).addTo(basicLayer);
 							map.addLayer(basicLayer);
 							map.setView([$('#lat').val(), $('#lon').val()], 12);
+							
+							if (rangeLayer) map.removeLayer(rangeLayer);
+							rangeLayer = L.geoJson($.parseJSON(data),{
+							  pointToLayer: function(feature,latlng){
+							  	getColor(feature.properties.net);
+								var circle = L.circle(latlng, feature.properties.range, {color: color, fillOpacity: 0.1});
+								return circle;
+							  }
+							});
+							rangeCheck();								
+						} else {
+							if (basicLayer) map.removeLayer(basicLayer);
+							alert("There are no stations.");							
 						}
 					});
 				};		
@@ -213,9 +260,39 @@
 							  }
 							});
 							map.addLayer(basicLayer);
+							
+							if (rangeLayer) map.removeLayer(rangeLayer);
+							rangeLayer = L.geoJson($.parseJSON(data),{
+							  pointToLayer: function(feature,latlng){
+							  	getColor(feature.properties.net);
+								var circle = L.circle(latlng, feature.properties.range, {color: color});
+								return circle;
+							  }
+							});		
+							rangeCheck();							
 						}					
 					});
 				};	
+				
+				function getColor(pNet){
+					switch(pNet) {
+						case '1':
+							color = '#ffad33';
+							break;
+						case '2':
+							color = '#ff3385';
+							break;
+						case '3':
+							color = '#ffff33';
+							break;
+						case '6': 
+							color = '#0066ff';
+							break;
+						default: 
+							color = 'black';
+							break;
+					}					
+				};
 
 				function showLocation(){	
 					if (marker != null){
@@ -236,6 +313,52 @@
 						$('#lon').val(actPos_lon);
 					}
 				};
+				
+				function rangeCheck(){
+					if ($('input[name="rangeCheckbox"]').is(':checked')) {
+						if (rangeLayer != null) map.addLayer(rangeLayer);
+					} else {
+						if (rangeLayer) map.removeLayer(rangeLayer);
+					}					
+				};				
+				
+				function showCover() {
+					var nets = new Array();
+					$('input[name="operator"]:checked').each(function() {
+						nets.push(this.value);
+					});				
+					$.ajax({
+						url:"http://localhost/PDT/API/getCover.php",
+						data:{lat:$('#lat').val(), lon:$('#lon').val(), nets: nets}
+					}).done(function(data){		
+						if (data != 0) {
+							if (basicLayer) map.removeLayer(basicLayer);
+							basicLayer = L.geoJson($.parseJSON(data),{
+							  pointToLayer: function(feature,latlng){
+								map.setView(latlng, 12);
+								var icon = L.icon({
+									iconUrl: 'http://localhost/PDT/szakszka_web/img/' + feature.properties.net + '.png',
+									iconSize: [40,40]
+								});
+								var marker = L.marker(latlng,{icon: icon});
+								marker.bindPopup("<b>" + feature.properties.title + "</b><br/>" + latlng + "<br/>" + feature.properties.description);
+								return marker;
+							  }
+							});
+							map.addLayer(basicLayer);
+							
+							if (rangeLayer) map.removeLayer(rangeLayer);
+							rangeLayer = L.geoJson($.parseJSON(data),{
+							  pointToLayer: function(feature,latlng){
+							  	getColor(feature.properties.net);
+								var circle = L.circle(latlng, feature.properties.range, {color: color});
+								return circle;
+							  }
+							});
+							rangeCheck();								
+						}					
+					});								
+				}
 				
 				function showNearest() {
 					var nets = new Array();
@@ -261,6 +384,16 @@
 							  }
 							});
 							map.addLayer(basicLayer);
+							
+							if (rangeLayer) map.removeLayer(rangeLayer);
+							rangeLayer = L.geoJson($.parseJSON(data),{
+							  pointToLayer: function(feature,latlng){
+							  	getColor(feature.properties.net);
+								var circle = L.circle(latlng, feature.properties.range, {color: color});
+								return circle;
+							  }
+							});	
+							rangeCheck();								
 						}					
 					});				
 				};		
@@ -275,14 +408,20 @@
 				};	
 
 				function showCellsOnRoute() {
+					document.getElementById("loader").style.visibility = "visible";
 					if ($('input[name="routeCheckbox"]').is(':checked')) {	
 						var directions_geojson = directionsLayer.toGeoJSON();
 						var waypoints = directions_geojson.features[0].geometry.features[0].geometry;
 						
+						var nets = new Array();
+						$('input[name="operator"]:checked').each(function() {
+							nets.push(this.value);
+						});		
+					
 						$.ajax({
 							type: "POST",
 							url:"http://localhost/PDT/API/getCellsOnRoute.php",
-							data:{lineString: waypoints}
+							data:{lineString: waypoints, nets: nets}
 						}).done(function(data){	
 							if (data != 0) {
 								if (basicLayer) map.removeLayer(basicLayer);
@@ -297,12 +436,32 @@
 									return marker;
 								  }
 								});
-								L.circle([$('#lat').val(),$('#lon').val()], $('#radius').val()).addTo(basicLayer);
 								map.addLayer(basicLayer);
 								map.setView([$('#lat').val(), $('#lon').val()], 12);
-							}			
-						});
+								
+								if (rangeLayer) map.removeLayer(rangeLayer);
+								rangeLayer = L.geoJson($.parseJSON(data),{
+								  pointToLayer: function(feature,latlng){
+									getColor(feature.properties.net);
+									var circle = L.circle(latlng, feature.properties.range, {color: color, fillOpacity: 0.1});
+									return circle;
+								  }
+								});
+								rangeCheck();								
+							}
+							document.getElementById("loader").style.visibility = "hidden";							
+						}).fail(function () {
+								document.getElementById("loader").style.visibility = "hidden";
+								alert("LONG TIME > 30s");
+							})
 					};
+				};
+				
+				function clearMap() {
+					if (marker) map.removeLayer(marker);
+					if (basicLayer) map.removeLayer(basicLayer);
+					if (rangeLayer) map.removeLayer(rangeLayer);
+					if (rangeLayer) map.removeLayer(directionsLayer);
 				};
 			</script>
 		</div>
