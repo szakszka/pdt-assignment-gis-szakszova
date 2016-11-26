@@ -13,11 +13,13 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 **My project**
 
-Application description: 
+Application description: GPS positions of cell towers in Slovakia
 
 Data source: OpenStreetMap, **OpenCellId**
 
 Technologies used: 
 * frontend: HTML (template Boilerplate), Mapbox API, Javascript, jQuery
+
 * backend: PHP
+
 * F <-> B: ajax
