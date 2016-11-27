@@ -63,7 +63,7 @@ http://localhost/PDT/API/getStations.php?lat=48.1686&lon=17.7176&radius=1000&net
 
 * show towers within a radius of a selected point
 
-![1.PNG](https://bitbucket.org/repo/Rdo79d/images/1461986579-1.PNG)
+![1.PNG](https://bitbucket.org/repo/Rdo79d/images/4255751641-1.PNG)
 
 * show tower description
 
