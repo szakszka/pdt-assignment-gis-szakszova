@@ -73,8 +73,6 @@ http://localhost/PDT/API/getStations.php?lat=48.1686&lon=17.7176&radius=1000&net
 
 
 ```
-#!sql
-
 CREATE TABLE public.towers
 (
   gid integer NOT NULL DEFAULT nextval('towers_gid_seq'::regclass),
