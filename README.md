@@ -56,18 +56,18 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 http://localhost/PDT/API/getStations.php?lat=48.1686&lon=17.7176&radius=1000&nets[1]=1&minrange=0&minsamples=0
 
-![2.PNG](https://bitbucket.org/repo/Rdo79d/images/3881956315-2.PNG)
+![2.PNG](2.PNG)
 
 
 ### Screen ###
 
 * show towers within a radius of a selected point
 
-![1.PNG](https://bitbucket.org/repo/Rdo79d/images/4255751641-1.PNG)
+![1.PNG](/1.PNG)
 
 * show tower description
 
-![3.PNG](https://bitbucket.org/repo/Rdo79d/images/2220296185-3.PNG)
+![3.PNG](3.PNG)
 
 ### Imported data to DB ###
 
