@@ -14,6 +14,8 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 ## My project - GPS positions of cell towers in Slovakia ##
 
+### Katarína Szakszová ###
+
 **Application description:** The web application displays the position of mobile towers in Slovakia.
 
 **Data source:** [OpenCellId](http://opencellid.org/)
@@ -50,4 +52,19 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 * set a minimum number of samples and the smallest range of tower
 
- 
+### API ###
+
+http://localhost/PDT/API/getStations.php?lat=48.1686&lon=17.7176&radius=1000&nets[1]=1&minrange=0&minsamples=0
+
+![2.PNG](https://bitbucket.org/repo/Rdo79d/images/3881956315-2.PNG)
+
+
+### Screen ###
+
+* show towers within a radius of a selected point
+
+![1.PNG](https://bitbucket.org/repo/Rdo79d/images/1461986579-1.PNG)
+
+* show tower description
+
+![3.PNG](https://bitbucket.org/repo/Rdo79d/images/2220296185-3.PNG)
