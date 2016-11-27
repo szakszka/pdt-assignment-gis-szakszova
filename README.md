@@ -40,7 +40,7 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
     * show towers within a radius of a selected point
 
-    * show the nearest *n* channels from the selected point
+    * show the nearest *n* towers from the selected point
     
     * show coverage on selected point
 
