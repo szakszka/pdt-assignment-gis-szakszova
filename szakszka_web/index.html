@@ -244,9 +244,7 @@
 						data:{lat: $('#lat').val(), lon: $('#lon').val(),radius: $('#radius').val(), nets: nets, minrange: $('#minrange').val(), minsamples: $('#minsamples').val()}
 					}).done(function(data){		
 						if (data != 0) {
-							if (radius_circle) map.removeLayer(radius_circle);
-							if (groupLayer) groupLayer.clearLayers();
-							
+							clearMap();
 							points = L.geoJson($.parseJSON(data),{
 							  pointToLayer: function(feature,latlng){
 								var icon = L.icon({
@@ -286,7 +284,7 @@
 						data:{cellId:$('#cellId').val()}
 					}).done(function(data){		
 						if (data != 0) {
-							if (basicLayer) map.removeLayer(basicLayer);
+							clearMap();
 							basicLayer = L.geoJson($.parseJSON(data),{
 							  pointToLayer: function(feature,latlng){
 								map.setView(latlng, 12);
@@ -334,10 +332,8 @@
 					}					
 				};
 
-				function showLocation(){	
-					if (marker != null){
-						map.removeLayer(marker);
-					}				
+				function showLocation(){
+					clearMap();						
 					marker = new L.Marker([$('#latS').val(),$('#lonS').val()]);
 					marker.bindPopup("<b>Searched position!</b><br/>" + "Lat:" + $('#latS').val() + "<br/>Lng:" + $('#lonS').val());
 					map.addLayer(marker);
@@ -354,7 +350,7 @@
 						data:{lat: $('#lat').val(), lon: $('#lon').val(), nets: nets, minrange: $('#minrange').val(), minsamples: $('#minsamples').val()}
 					}).done(function(data){		
 						if (data != 0) {
-							if (basicLayer) map.removeLayer(basicLayer);
+							clearMap();
 							basicLayer = L.geoJson($.parseJSON(data),{
 							  pointToLayer: function(feature,latlng){
 								map.setView(latlng, 12);
@@ -392,7 +388,7 @@
 						data:{lat: $('#lat').val(), lon: $('#lon').val(), nearest: $('#nearest').val(), nets: nets, minrange: $('#minrange').val(), minsamples: $('#minsamples').val()}
 					}).done(function(data){		
 						if (data != 0) {
-							if (basicLayer) map.removeLayer(basicLayer);
+							clearMap();
 							basicLayer = L.geoJson($.parseJSON(data),{
 							  pointToLayer: function(feature,latlng){
 								map.setView(latlng, 12);
@@ -437,7 +433,6 @@
 							data:{lineString: waypoints, nets: nets, minrange: $('#minrange').val(), minsamples: $('#minsamples').val()}
 						}).done(function(data){	
 							if (data != 0) {
-								if (basicLayer) map.removeLayer(basicLayer);
 								basicLayer = L.geoJson($.parseJSON(data),{
 								  pointToLayer: function(feature,latlng){
 									var icon = L.icon({
@@ -489,7 +484,8 @@
 				};				
 								
 				function routeCheck(){
-					if ($('input[name="routeCheckbox"]').is(':checked')) {			
+					if ($('input[name="routeCheckbox"]').is(':checked')) {	
+						clearMap();					
 						map.addLayer(directionsLayer);
 					} else {
 						map.removeLayer(directionsLayer);
