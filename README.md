@@ -14,7 +14,7 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 ## My project - GPS positions of cell towers in Slovakia ##
 
-**Application description:** 
+**Application description:** The web application displays the position of mobile towers in Slovakia.
 
 **Data source:** [OpenCellId](http://opencellid.org/)
 
@@ -25,3 +25,29 @@ Build a map-based application, which lets the user see geo-based data on a map a
 * *back-end*: PHP
 
 * front-end & back-end communication: ajax
+
+### Scenarios ###
+
+* *identify current location*
+
+* *choose coordinates from maps*
+
+* *filter operators, view range*
+
+* **search**
+
+    * show towers within a radius of a selected point
+
+    * show the nearest *n* channels from the selected point
+    
+    * show coverage on selected point
+
+    * find the tower by its *id*
+
+    * show closest towers with coverage on the road
+
+* view simple statistics
+
+* set a minimum number of samples and the smallest range of tower
+
+ 
