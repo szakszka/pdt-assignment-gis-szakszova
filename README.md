@@ -14,7 +14,7 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 ## My project - GPS positions of cell towers in Slovakia ##
 
-### Katarína Szakszová ###
+*Katarína Szakszová*
 
 **Application description:** The web application displays the position of mobile towers in Slovakia.
 
@@ -68,3 +68,50 @@ http://localhost/PDT/API/getStations.php?lat=48.1686&lon=17.7176&radius=1000&net
 * show tower description
 
 ![3.PNG](https://bitbucket.org/repo/Rdo79d/images/2220296185-3.PNG)
+
+### Imported data to DB ###
+
+
+```
+#!sql
+
+CREATE TABLE public.towers
+(
+  gid integer NOT NULL DEFAULT nextval('towers_gid_seq'::regclass),
+  radio character(5) NOT NULL,
+  mcc smallint NOT NULL,
+  net smallint NOT NULL,
+  area integer NOT NULL,
+  cell integer NOT NULL,
+  unit integer,
+  the_geom geometry,
+  lon double precision NOT NULL,
+  lat double precision NOT NULL,
+  range integer NOT NULL,
+  samples integer NOT NULL DEFAULT 0,
+  changeable boolean NOT NULL,
+  created integer NOT NULL,
+  updated integer NOT NULL,
+  averagesignal integer,
+  CONSTRAINT towers_pkey PRIMARY KEY (gid),
+  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
+  CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL),
+  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4326)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.towers
+  OWNER TO postgres;
+
+-- Index: public.towers_the_geom_gist
+CREATE INDEX towers_geom_index ON towers USING GIST (the_geom);
+
+--
+COPY towers(radio,mcc,net,area,cell,unit,lon,lat,range,samples,changeable,created,updated,averageSignal) FROM 'C:\\pom\\cell_towes_sk_231.csv' DELIMITERS ',' CSV HEADER;
+
+--
+UPDATE towers SET the_geom = ST_GeomFromText('POINT(' || lon || ' ' || lat || ')',4326);
+
+
+```
