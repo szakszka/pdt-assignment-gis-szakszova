@@ -245,7 +245,7 @@
 					}).done(function(data){		
 						if (data != 0) {
 							clearMap();
-							map.addLayer(marker);
+							if (marker) map.addLayer(marker);
 							points = L.geoJson($.parseJSON(data),{
 							  pointToLayer: function(feature,latlng){
 								var icon = L.icon({
@@ -352,7 +352,7 @@
 					}).done(function(data){		
 						if (data != 0) {
 							clearMap();
-							map.addLayer(marker);
+							if ($('input[name="actPosCheckbox"]').is(':checked') == false) map.addLayer(marker);
 							basicLayer = L.geoJson($.parseJSON(data),{
 							  pointToLayer: function(feature,latlng){
 								map.setView(latlng, 12);
@@ -391,7 +391,7 @@
 					}).done(function(data){		
 						if (data != 0) {
 							clearMap();
-							map.addLayer(marker);
+							if ($('input[name="actPosCheckbox"]').is(':checked') == false) map.addLayer(marker);
 							basicLayer = L.geoJson($.parseJSON(data),{
 							  pointToLayer: function(feature,latlng){
 								map.setView(latlng, 12);
